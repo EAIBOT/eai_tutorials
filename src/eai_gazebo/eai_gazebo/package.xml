@@ -1,0 +1,20 @@
+<package>
+  <name>eai_gazebo</name>
+  <version>0.1.0</version>
+  <description>Gazebo launchers and worlds for Dashgo simulation, inspired by the turtlebot_gazebo package. A libgazebo_ros_kobuki plugins are used.</description>
+  <maintainer email="patrick@hahabot.com">Patrick</maintainer>
+  <license>BSD</license>
+  <author email="patrick@hahabot.com">Eaibot</author>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <run_depend>yocs_cmd_vel_mux</run_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>kobuki_gazebo_plugins</run_depend>
+  <run_depend>robot_pose_ekf</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>dashgo_driver</run_depend>
+  <run_depend>dashgo_description</run_depend>
+  <run_depend>dashgo_nav</run_depend>
+  <run_depend>xacro</run_depend>
+</package>

@@ -1,0 +1,12 @@
+<launch>
+  
+
+<!--
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="true"/>
+    <remap from="/joint_states" to="/dashgo/joint_states" />
+  </node>-->
+  
+
+  
+</launch>

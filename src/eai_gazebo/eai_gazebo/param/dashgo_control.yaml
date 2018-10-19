@@ -1,0 +1,15 @@
+dashgo:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+    
+  # Velocity Controllers ---------------------------------------
+  joint1_Velocity_controller:
+    type: effort_controllers/JointVelocityController
+    joint: base_l_wheel_joint
+    pid: {p: 10.0, i: 0.01, d: 0.0}
+  joint2_Velocity_controller:
+    type: effort_controllers/JointVelocityController
+    joint: base_r_wheel_joint
+    pid: {p: 10.0, i: 0.01, d: 0.0}

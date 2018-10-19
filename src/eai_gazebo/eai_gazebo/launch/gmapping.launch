@@ -1,0 +1,16 @@
+<launch>
+  <arg name="with_teb"   default="true"/>
+  <!-- Gmapping -->
+  <include file="$(find dashgo_gazebo)/launch/includes/gmapping.launch.xml">
+    <arg name="scan_topic" value="scan"/>
+  </include>
+
+  <!-- Move base -->
+  <include file="$(find dashgo_gazebo)/launch/includes/move_base.launch.xml">
+    <arg name="teb_move_base"   default="$(arg with_teb)"/>  
+  </include>
+
+<!--  <include file="$(find world_canvas_server)/launch/world_canvas_server.launch"/>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/> -->
+  <node name="robot_pose_publisher" pkg="robot_pose_publisher" type="robot_pose_publisher" />
+</launch>
