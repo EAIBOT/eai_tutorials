@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<robot name="base" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Define a number of dimensions using properties -->
+  <xacro:property name="base_length" value="0.165" />
+  <xacro:property name="base_radius" value="0.20" />
+  <xacro:property name="wheel_length" value="0.02" />
+  <xacro:property name="wheel_radius" value="0.060" />
+  <xacro:property name="wheel_separation" value="0.340" />
+  <xacro:property name="wheel_offset_x" value="0" />
+  <!--<xacro:property name="wheel_offset_y" value="0.17" />-->
+  <xacro:property name="wheel_offset_z" value="-0.038" />
+  <xacro:property name="passive_wheel_length" value="0.02" />
+  <xacro:property name="passive_wheel_radius" value="0.019" />
+  <xacro:property name="passive_wheel_offset_x" value="0.17" />
+  <xacro:property name="passive_wheel_offset_y" value="0" />
+  <xacro:property name="passive_wheel_offset_z" value="${passive_wheel_radius+wheel_offset_z}" />
+  
+  <xacro:property name="PI" value="3.1415926535897931" />
+     
+
+  <!-- patrick_0802 define a wheel -->
+  <xacro:macro name="wheel" params="suffix parent reflect">
+    <joint name="${parent}_${suffix}_wheel_joint" type="continuous">
+      <parent link="${parent}_link"/>
+      <child link="${parent}_${suffix}_wheel_link"/>
+      <origin xyz="${wheel_offset_x} ${reflect*wheel_separation/2} ${wheel_radius+wheel_offset_z}" 
+              rpy="${-PI/2} 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-100000.0"
+             upper="100000.0"
+             effort="5.0"
+             velocity="1.0"/>
+      <safety_controller k_position="1"
+                         k_velocity="1"
+                         soft_lower_limit="-9000.0"
+                         soft_upper_limit="9000.0" />
+    </joint>
+    <link name="${parent}_${suffix}_wheel_link">
+      <visual>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+        </geometry>
+        <xacro:insert_block name="material_orange"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0" />
+        <mass value="0.01" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0"
+                 izz="0.01" />
+      </inertial>
+    </link>
+  </xacro:macro>
+  
+  <!-- patrick_0802 define a passive wheel -->
+  <xacro:macro name="passive_wheel" params="suffix parent reflect">
+    <joint name="${parent}_${suffix}_wheel_joint" type="fixed">
+      <parent link="${parent}_link"/>
+      <child link="${parent}_${suffix}_wheel_link"/>
+      <origin xyz="${reflect*passive_wheel_offset_x} ${passive_wheel_offset_y} ${passive_wheel_offset_z}" 
+              rpy="${-PI/2} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+    <link name="${parent}_${suffix}_wheel_link">
+      <visual>
+        <geometry>
+          <cylinder radius="${passive_wheel_radius}" length="${passive_wheel_length}"/>
+        </geometry>
+        <xacro:insert_block name="material_off_white"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="${passive_wheel_length}" radius="${passive_wheel_radius}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </collision>
+       <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0"
+                 izz="0.01" />
+      </inertial>
+    </link>
+  </xacro:macro>
+
+  <!-- patrick_0802 define a base -->
+  <xacro:macro name="base" params="name">
+	  <joint name="${name}_joint" type="fixed">
+			<origin xyz="0 0 ${-wheel_offset_z}" rpy="0 0 0"/>
+			<parent link="${name}_footprint"/>
+			<child link="${name}_link"/>
+	  </joint>
+	  <link name="${name}_link">
+			<visual>
+				<geometry>
+		      <cylinder length="${base_length}" radius="${base_radius}"/>
+		      <!--<mesh filename="package://dashgo_description/meshes/base.DAE"/> -->
+				</geometry>
+				<origin xyz="0 0 ${base_length/2}" rpy="0 0 0"/>
+				<xacro:insert_block name="material_light_grey"/>
+			</visual>
+			<collision name="${name}">
+				<geometry>
+				  <cylinder length="${base_length}" radius="${base_radius}"/>
+				</geometry>
+				<origin xyz="0 0 ${base_length/2}" rpy="0 0 0"/>
+			</collision>
+			<inertial>
+				<!-- COM experimentally determined -->
+				<origin xyz="-0.01 0 0"/>
+				<mass value="20"/>
+				<!-- 2.4/2.6 kg for small/big battery pack -->
+				<!-- Kobuki's inertia tensor is approximated by a cylinder with homogeneous mass distribution
+				       More details: http://en.wikipedia.org/wiki/List_of_moment_of_inertia_tensors
+				       m = 2.4 kg; h = 0.09 m; r = 0.175 m
+				       ixx = 1/12 * m * (3 * r^2 + h^2)
+				       iyy = 1/12 * m * (3 * r^2 + h^2)
+				       izz = 1/2 * m * r^2
+				    -->
+				<inertia ixx="0.168" ixy="0.0" ixz="0.0" iyy="0.168" iyz="0.0" izz="0.2"/>
+			</inertial>
+	  </link>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+
+<robot name="d1" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Include all component files -->
+  <xacro:include filename="$(find dashgo_description)/urdf/materials.urdf.xacro" />
+  <xacro:include filename="$(find dashgo_description)/urdf/dashgo/base.urdf.xacro" />
+  <xacro:include filename="$(find dashgo_description)/urdf/dashgo/wheel.urdf.xacro" />
+  <xacro:include filename="$(find dashgo_description)/urdf/dashgo/passive_wheel.urdf.xacro" />
+  <xacro:include filename="$(find dashgo_description)/urdf/dashgo/plate.urdf.xacro" />
+  <xacro:include filename="$(find dashgo_description)/urdf/sensors/laser.urdf.xacro"/>
+  <xacro:include filename="$(find dashgo_description)/urdf/sensors/imu.urdf.xacro"/>
+  <xacro:include filename="$(find dashgo_description)/urdf/sensors/cliff.urdf.xacro"/>
+   
+  <!-- Define a number of dimensions using properties -->
+  <xacro:property name="ground_gap" value="0.038" />
+  <xacro:property name="base_length" value="0.165" />
+  <xacro:property name="base_radius" value="0.20" />
+  <xacro:property name="base_mass" value="5" />
+  <xacro:property name="plate_height" value="0.16" />
+  <xacro:property name="wheel_width" value="0.02" />
+  <xacro:property name="wheel_radius" value="0.06" />
+  <xacro:property name="wheel_separation" value="0.340" />
+  <!--<xacro:property name="wheel_offset_y" value="0.17" />-->
+  <xacro:property name="passive_wheel_radius" value="0.019" />
+  <xacro:property name="passive_wheel_offset_x" value="0.17" />
+  <xacro:property name="passive_wheel_offset_z" value="${passive_wheel_radius-ground_gap+0.005}" />
+ 
+  <!-- patrick_0802 define a base -->
+  <link name="base_footprint">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.05 0.05 0.001" />
+        </geometry>
+				<material name="light_grey">
+				  <color rgba="0.6 0.6 0.6 1"/>
+				</material>
+      </visual>
+  </link>
+  
+  <!-- Add the base and plates -->
+  <base parent="base_footprint" 
+        length="${base_length}" 
+        radius="${base_radius}" 
+        offset_z="${ground_gap}" 
+        mass="${base_mass}"/>
+  <wheel parent="base" 
+         lr="left" 
+         offset_x="0"
+         offset_y="${wheel_separation/2}"
+         offset_z="${wheel_radius - ground_gap}"
+         width="${wheel_width}"
+         radius="${wheel_radius}"/>
+  <wheel parent="base" 
+         lr="right" 
+         offset_x="0"
+         offset_y="${-wheel_separation/2}"
+         offset_z="${wheel_radius - ground_gap}"
+         width="${wheel_width}"
+         radius="${wheel_radius}"/>
+  <passive_wheel parent="base" 
+                 attr="front" 
+                 offset_x="${passive_wheel_offset_x}"
+                 offset_y="0"
+                 offset_z="${passive_wheel_offset_z}"
+                 width="${wheel_width}"
+                 radius="${passive_wheel_radius}"/>
+  <passive_wheel parent="base" 
+                 attr="rear" 
+                 offset_x="${-passive_wheel_offset_x}"
+                 offset_y="0"
+                 offset_z="${passive_wheel_offset_z}"
+                 width="${wheel_width}"
+                 radius="${passive_wheel_radius}"/>
+  <plate parent="base"
+         name="plate"
+         radius="${base_radius}" 
+         offset_x="0"
+         offset_y="0"
+         offset_z="${base_length+plate_height}" 
+         mass="0.5"/>
+   
+  <!-- Add the flag -->
+  <joint name="front_point_flag" type="fixed">
+    <origin xyz="${base_radius/2} 0 0.01" rpy="0 0 0" />
+    <parent link="plate_link"/>
+    <child link="front_flag" />
+  </joint>
+  <link name="front_flag">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${base_radius} 0.02 0.01" />
+        </geometry>
+				<xacro:insert_block name="material_white"/>
+      </visual>
+  </link>
+  <gazebo reference="front_flag">
+    <material>Gazebo/White</material>
+  </gazebo>
+	<!-- dashgo Gazebo simulation elements -->
+	<hokuyo_laser parent="plate"/>
+	<imu_sensor parent="base"/>
+<!--   <cliff_sensor/>
+  
+  <gazebo>
+    <plugin name="dashgo_controller" filename="libgazebo_ros_kobuki.so">
+      <publish_tf>1</publish_tf>
+      <left_wheel_joint_name>wheel_left_joint</left_wheel_joint_name>
+      <right_wheel_joint_name>wheel_right_joint</right_wheel_joint_name>
+      <wheel_separation>${wheel_separation}</wheel_separation>
+      <wheel_diameter>${wheel_radius*2}</wheel_diameter>
+      <torque>6.0</torque>
+      <velocity_command_timeout>0.6</velocity_command_timeout>
+      <cliff_sensor_left_name>cliff_sensor_left</cliff_sensor_left_name>
+      <cliff_sensor_center_name>cliff_sensor_front</cliff_sensor_center_name>
+      <cliff_sensor_right_name>cliff_sensor_right</cliff_sensor_right_name>
+      <cliff_detection_threshold>0.06</cliff_detection_threshold>
+      <bumper_name>bumpers</bumper_name>
+      <imu_name>imu</imu_name>
+    </plugin>
+  </gazebo>-->
+  <!-- using the dashgo gazebo_plugins -->
+  <gazebo>
+    <plugin name="dashgo_controller" filename="libgazebo_ros_dashgo.so">
+      <publish_tf>1</publish_tf>
+      <left_wheel_joint_name>wheel_left_joint</left_wheel_joint_name>
+      <right_wheel_joint_name>wheel_right_joint</right_wheel_joint_name>
+      <wheel_separation>${wheel_separation}</wheel_separation>
+      <wheel_diameter>${wheel_radius*2}</wheel_diameter>
+      <torque>6.0</torque>
+      <velocity_command_timeout>0.6</velocity_command_timeout>
+<!--      <pose_covariance_diagonal>[0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]</pose_covariance_diagonal>
+      <twist_covariance_diagonal>[0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]</twist_covariance_diagonal>-->
+      <imu_name>imu</imu_name>
+    </plugin>
+  </gazebo>
+</robot>
+
+

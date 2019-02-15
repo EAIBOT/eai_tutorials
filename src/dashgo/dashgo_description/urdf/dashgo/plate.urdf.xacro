@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<robot name="plate" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:property name="length" value="0.003" />
+  <!-- patrick_0803 define a plate -->
+  <xacro:macro name="plate" params="parent name radius offset_x offset_y offset_z mass">
+    <!-- joint -->
+	  <joint name="${name}_joint" type="fixed">
+			<origin xyz="${offset_x} ${offset_y} ${offset_z}"
+			        rpy="0 0 0"/>
+			<parent link="${parent}_link"/>
+			<child link="${name}_link"/>
+	  </joint>
+    <!-- link -->
+	  <link name="${name}_link">
+			<visual>
+				<geometry>
+		      <cylinder length="${length}" radius="${radius}"/>
+				</geometry>
+				<origin rpy="0 0 0" xyz="0 0 0"/>
+				<xacro:insert_block name="material_light_grey"/>
+			</visual>
+			<collision name="${name}_link">
+				<geometry>
+				  <cylinder length="${length}" radius="${radius}"/>
+				</geometry>
+				<origin rpy="0 0 0" xyz="0 0 0"/>
+			</collision>
+			<inertial>
+				<!-- COM experimentally determined -->
+				<origin xyz="0 0 0"/>
+				<mass value="${mass}"/>
+				<!-- 2.4/2.6 kg for small/big battery pack -->
+				<!-- Kobuki's inertia tensor is approximated by a cylinder with homogeneous mass distribution
+				       More details: http://en.wikipedia.org/wiki/List_of_moment_of_inertia_tensors
+				       m = 2.4 kg; h = 0.09 m; r = 0.175 m
+				       ixx = 1/12 * m * (3 * r^2 + h^2)
+				       iyy = 1/12 * m * (3 * r^2 + h^2)
+				       izz = 1/2 * m * r^2
+				    -->
+				<inertia ixx="${mass/12*(3*radius*radius+length*length)}" ixy="0.0" ixz="0.0" 
+				         iyy="${mass/12*(3*radius*radius+length*length)}" iyz="0.0" 
+				         izz="${mass/2*radius*radius}"/>
+			</inertial>
+	  </link>
+	  
+	  <!-- gazebo parameters -->
+	  <gazebo reference="${name}_link">
+	    <material>Gazebo/Black</material>
+	  </gazebo>
+  </xacro:macro>
+</robot>

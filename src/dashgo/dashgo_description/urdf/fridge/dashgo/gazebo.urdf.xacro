@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+
+<robot name="dashgo_sim" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="dashgo_sim">
+  	<gazebo reference="base_link">
+	    <material>Gazebo/Black</material>
+	  </gazebo>
+	  
+  	<gazebo reference="plate_link">
+	    <material>Gazebo/Black</material>
+	  </gazebo>
+	  
+	  <gazebo reference="base_l_wheel_link">
+	    <mu1>1.0</mu1>
+	    <mu2>1.0</mu2>
+      <kp>1000000.0</kp>
+	    <kd>100.0</kd>
+	    <minDepth>0.001</minDepth>
+	    <maxVel>1.0</maxVel>
+	    <material>Gazebo/Orange</material>
+	  </gazebo>
+
+	  <gazebo reference="base_r_wheel_link">
+	    <mu1>1.0</mu1>
+	    <mu2>1.0</mu2>
+      <kp>1000000.0</kp>
+	    <kd>100.0</kd>
+	    <minDepth>0.001</minDepth>
+	    <maxVel>1.0</maxVel>
+	    <material>Gazebo/Orange</material>
+	  </gazebo>
+
+	  <gazebo reference="front_flag">
+	    <mu1>0.3</mu1>
+	    <mu2>0.3</mu2>
+	    <sensor type="contact" name="bumpers">
+	      <always_on>1</always_on>
+	      <update_rate>50.0</update_rate>
+	      <visualize>true</visualize>
+	      <contact>
+	        <collision>base_footprint_fixed_joint_lump__base_collision</collision>
+	      </contact>
+	    </sensor>
+	  </gazebo>
+	  
+	  <!-- for the state publisher
+		<gazebo>
+			<plugin name="state_publisher" filename="libgazebo_ros_control.so">
+        <robotNamespace>/dashgo</robotNamespace>
+        <!- <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+			</plugin>
+		</gazebo>	  -->
+
+  
+		<gazebo>
+			<plugin name="dashgo_controller" filename="libgazebo_ros_diff_drive.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>50</updateRate>
+        <leftJoint>base_l_wheel_joint</leftJoint>
+        <rightJoint>base_r_wheel_joint</rightJoint>
+        <wheelSeparation>0.340</wheelSeparation>
+        <wheelDiameter>0.060</wheelDiameter>
+        <torque>20</torque>
+        <wheeltorque>5</wheeltorque>
+        <commandTopic>/dashgo/cmd_vel</commandTopic>
+        <odometryTopic>/dashgo/odom</odometryTopic>
+        <odometryFrame>odom</odometryFrame>
+        <robotBaseFrame>base_footprint</robotBaseFrame>
+        <robotNamespace>/</robotNamespace>
+			</plugin>
+		</gazebo>
+		
+<!--	
+    <gazebo reference="gyro_link">
+	   <sensor type="imu" name="imu">
+        <always_on>true</always_on>
+        <update_rate>50</update_rate>
+        <visualize>false</visualize>
+        <imu>
+          <noise>
+            <type>gaussian</type>
+	          <rate>
+	            <mean>0.0</mean>
+	            <stddev>${0.0014*0.0014}</stddev> <!- 0.25 x 0.25 (deg/s) 
+	            <bias_mean>0.0</bias_mean>
+	            <bias_stddev>0.0</bias_stddev>
+	          </rate>
+		        <accel> <!- not used in the plugin and real robot, hence using tutorial values 
+			        <mean>0.0</mean>
+			        <stddev>1.7e-2</stddev>
+			        <bias_mean>0.1</bias_mean>
+			        <bias_stddev>0.001</bias_stddev>
+		        </accel>
+          </noise>
+	      </imu>
+      </sensor>
+	  </gazebo> -->
+	  
+<!--
+      <transmission name="tran1">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_l_wheel_joint">
+          <hardwareInterface>EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor1">
+          <hardwareInterface>EffortJointInterface</hardwareInterface>
+          <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+      </transmission>
+      
+      <transmission name="tran2">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_r_wheel_joint">
+          <hardwareInterface>EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor2">
+          <hardwareInterface>EffortJointInterface</hardwareInterface>
+          <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>-->
+  </xacro:macro>
+</robot>

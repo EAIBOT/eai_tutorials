@@ -1,0 +1,24 @@
+<launch>
+  <include file="$(find astra_launch)/launch/astra.launch"/>
+  <include file="$(find dashgo_driver)/launch/demo.launch"/>
+
+  <node name="follower" pkg="dashgo_tools" type="follower.py">
+    <remap from="/cmd_vel" to="/smoother_cmd_vel"/>
+    <remap from="/point_cloud" to="camera/depth/points"/>
+    <param name="enabled" value="true" />
+    <param name="x_scale" value="7.0" />
+    <param name="z_scale" value="2.0" />
+    <param name="min_x" value="-0.35" />
+    <param name="max_x" value="0.35" />
+    <param name="min_y" value="0.1" />
+    <param name="max_y" value="0.5" />
+    <param name="max_z" value="1.2" />
+    <param name="goal_z" value="0.6" />
+  </node>
+<!--
+  <include file="$(find flashgo)/launch/flash_lidar.launch"/>
+  <node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
+    <rosparam command="load" file="$(find dashgo_tools)/conf/box_filter.yaml" />
+  </node>
+-->
+</launch>

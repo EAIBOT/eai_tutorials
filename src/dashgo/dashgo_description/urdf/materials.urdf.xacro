@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot name="materials" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="PI" value="3.1415926535897931" />
+  
+  <xacro:property name="material_white">
+    <material name="White">
+      <color rgba="1 1 1 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_off_white">
+    <material name="OffWhite">
+      <color rgba="0.8 0.8 0.8 1.0"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_grey">
+    <material name="Grey">
+      <color rgba="0.7 0.7 0.7 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_light_grey">
+    <material name="light_grey">
+      <color rgba="0.6 0.6 0.6 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_dark_grey">
+    <material name="DarkGrey">
+      <color rgba="0.3 0.3 0.3 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_black">
+    <material name="Black">
+    	<color rgba="0.2 0.2 0.2 1.0"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_transparent_black">
+    <material name="TransparentBlack">
+    	<color rgba="0.2 0.2 0.2 0.8"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_red">
+    <material name="Red">
+      <color rgba="0.8 0 0 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_green">
+    <material name="Green">
+      <color rgba="0.0 0.8 0.0 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_transparent_green">
+    <material name="TransparentGreen">
+      <color rgba="0.0 0.8 0.0 0.5"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_blue">
+    <material name="Blue">
+      <color rgba="0.0 0.0 0.8 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_grey_blue">
+    <material name="grey_blue">
+      <color rgba="0.4 0.4 1.0 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_orange">
+    <material name="Orange">
+      <color rgba="1.0 0.55 0.0 1"/>
+    </material>
+  </xacro:property>
+</robot>
