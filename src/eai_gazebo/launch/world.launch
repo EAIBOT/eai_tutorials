@@ -1,0 +1,51 @@
+<launch>
+  <arg name="world_file_name"  default="test_env_wg3.world"/>
+  <arg name="world_file"  default="$(find eai_gazebo)/worlds/$(arg world_file_name)"/>
+  <arg name="base"      value="$(optenv DASHGO_BASE d1)"/> <!-- create, roomba -->
+  <arg name="battery"   value="$(optenv DASHGO_BATTERY /proc/acpi/battery/BAT0)"/>  <!-- /proc/acpi/battery/BAT0 --> 
+  <arg name="gui" default="true"/>
+  <arg name="stacks"    value="$(optenv DASHGO_STACKS hexagons)"/>  <!-- circles, hexagons --> 
+  <arg name="3d_sensor" value="$(optenv DASHGO_3D_SENSOR kinect)"/>  <!-- kinect, asus_xtion_pro --> 
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="use_sim_time" value="true"/>
+    <arg name="debug" value="false"/>
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="world_name" value="$(arg world_file)"/>
+  </include>
+
+	<!-- Add robot description -->
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find dashgo_description)/urdf/dashgo.urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+  
+  <!-- Load joint controller configurations from YAML file to parameter server
+  <rosparam file="$(find eai_gazebo)/param/dashgo_control.yaml" command="load"/>
+  <!- Load joint limits configurations from YAML file to parameter server
+  <rosparam file="$(find eai_gazebo)/param/dashgo_joint_limits.yaml" command="load"/>-->
+  
+  <!-- Gazebo model spawner -->
+  <node name="spawn_dashgo_model" pkg="gazebo_ros" type="spawn_model"
+        args="-unpause -urdf -param robot_description -model dashgo">
+  </node>
+   
+  <!-- Velocity muxer -->
+  <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux"
+        args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
+    <param name="yaml_cfg_file" value="$(find eai_gazebo)/param/mux.yaml" />
+    <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
+  </node>      
+  <!-- load the controllers
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/dashgo" args="joint_state_controller
+                                       joint1_Velocity_controller
+                                       joint2_Velocity_controller"/> -->
+
+  <!-- convert joint states to TF transforms for rviz, etc  -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <param name="publish_frequency" value="50.0" />
+    <param name="ignore_timestamp" value="true" />
+    <!-- <remap from="/joint_states" to="/dashgo/joint_states" /> -->
+  </node>
+</launch>

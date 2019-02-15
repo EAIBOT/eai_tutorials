@@ -1,0 +1,17 @@
+<!--
+  Useful for debugging or just viewing the kobuki model/urdf/transform. 
+ -->
+<launch>
+  <arg name="with_controller" default="ture" />
+  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find dashgo_description)/urdf/dashgo.urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+    <param name="publish_frequency" type="double" value="5.0" />
+  </node>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="true" if="$(arg with_controller)"/>
+  </node>
+  
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find dashgo_description)/rviz/model.rviz"/>
+</launch>

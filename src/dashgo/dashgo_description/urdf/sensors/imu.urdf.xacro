@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<robot name="imu_sensor" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find dashgo_description)/urdf/materials.urdf.xacro" />
+  <xacro:macro name="imu_sensor" params="parent">
+    <!-- add imu -->
+    <joint name="imu_joint" type="fixed">
+      <axis xyz="0 1 0"/>
+      <origin xyz="0.056 0.062 0.0202" rpy="0 0 0"/>
+      <parent link="${parent}_link"/>
+      <child link="imu_link"/>
+    </joint>
+    <link name="imu_link">
+      <inertial>
+        <mass value="0.001"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0"
+                 iyy="0.000001" iyz="0"
+                 izz="0.0001"/>
+      </inertial>
+    </link>
+    <!-- fake imu for simulation -->
+    <gazebo reference="imu_link">
+      <sensor type="imu" name="imu">
+        <always_on>true</always_on>
+        <update_rate>50</update_rate>
+        <visualize>false</visualize>
+        <imu>
+          <noise>
+            <type>gaussian</type>
+            <rate>
+              <mean>0.0</mean>
+              <stddev>${0.0014*0.0014}</stddev> <!-- 0.25 x 0.25 (deg/s) -->
+              <bias_mean>0.0</bias_mean>
+              <bias_stddev>0.0</bias_stddev>
+            </rate>
+            <accel> <!-- not used in the plugin and real robot, hence using tutorial values -->
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+              <bias_mean>0.1</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </accel>
+          </noise>
+        </imu>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

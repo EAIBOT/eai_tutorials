@@ -1,4 +1,0 @@
-<launch>
-  <node name="dobot_sever" pkg="dobot" type="DobotServer" output="screen" respawn="true"/>
-  <node name="dobot_client_jog" pkg="dobot" type="DobotClient_JOG" output="screen" respawn="true"/>
-</launch>

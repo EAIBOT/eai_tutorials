@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<robot name="passive_wheel" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- patrick_0803 define a passive wheel -->
+  <xacro:macro name="passive_wheel" params="parent attr offset_x offset_y offset_z width radius">
+    <!-- joint -->
+    <joint name="passive_wheel_${attr}_joint" type="fixed">
+      <parent link="${parent}_link"/>
+      <child link="passive_wheel_${attr}_link"/>
+      <origin xyz="${offset_x} ${offset_y} ${offset_z}" 
+              rpy="${-PI/2} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+    <!-- link -->
+    <link name="passive_wheel_${attr}_link">
+      <visual>
+        <geometry>
+          <cylinder length="${width}" radius="${radius}"/>
+        </geometry>
+        <xacro:insert_block name="material_off_white"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="${width}" radius="${radius}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </collision>
+       <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0"
+                 izz="0.01" />
+      </inertial>
+    </link>
+    <!-- gazebo parameters -->
+	  <gazebo reference="passive_wheel_${attr}_link">
+	    <mu1>0.1</mu1>
+	    <mu2>0.1</mu2>
+	    <material>Gazebo/Blue</material>
+	  </gazebo>     
+  </xacro:macro>
+</robot>
