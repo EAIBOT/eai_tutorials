@@ -4,6 +4,7 @@ import rospy
 from geometry_msgs.msg import Twist, Point
 from math import copysign, sqrt, pow
 import tf
+import math
 
 class CalibrateLinear():
     def __init__(self):
@@ -18,9 +19,9 @@ class CalibrateLinear():
         r = rospy.Rate(self.rate)
         
         # Set the distance to travel
-        self.test_distance = rospy.get_param('~test_distance', 4.0) # meters
-        self.speed = rospy.get_param('~speed', 0.15) # meters per second
-        self.tolerance = rospy.get_param('~tolerance', 0.05) # meters
+        self.test_distance = rospy.get_param('~test_distance', 1.0) # meters
+        self.speed = rospy.get_param('~speed', 0.3) # meters per second
+        self.tolerance = rospy.get_param('~tolerance', 0.02) # meters
         self.odom_linear_scale_correction = rospy.get_param('~odom_linear_scale_correction', 1.0)
         self.start_test = rospy.get_param('~start_test', True)
         
@@ -55,7 +56,9 @@ class CalibrateLinear():
         y_start = self.position.y
             
         move_cmd = Twist()
-            
+        linear_v=0
+        start_slow_speed=0.15
+        min_linear_speed=0.08           
         while not rospy.is_shutdown():
             # Stop the robot by default
             move_cmd = Twist()
@@ -81,7 +84,22 @@ class CalibrateLinear():
                     rospy.loginfo(params)
                 else:
                     # If not, move in the appropriate direction
-                    move_cmd.linear.x = copysign(self.speed, -1 * error)
+                    #move_cmd.linear.x = copysign(self.speed, -1 * error)
+                    try: 
+		    	linear_v =0.5*error;
+		    except:
+			rospy.loginfo("linear_v ji suan error")
+		    #rospy.loginfo("linear_v = "+ str(linear_v)+" self.speed="+str(self.speed))
+
+                    #rospy.loginfo("self.speed "+str(self.speed))
+		    if math.fabs(linear_v) >= math.fabs(self.speed):
+			linear_v= self.speed
+		    elif math.fabs(linear_v) < math.fabs(start_slow_speed) :
+			linear_v=min_linear_speed
+                    else:
+                        pass 
+                    #rospy.loginfo("****linear_v = "+ str(linear_v)+" self.speed="+str(self.speed))
+                    move_cmd.linear.x = copysign(math.fabs(linear_v), -1 * error)
             else:
                 self.position = self.get_position()
                 x_start = self.position.x

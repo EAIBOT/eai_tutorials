@@ -19,6 +19,8 @@ TrajectoryPlannerROS:
    latch_xy_goal_tolerance: false
    pdist_scale: 0.4
    gdist_scale: 0.8
+#   pdist_scale: 100
+#   gdist_scale: 0.4
    meter_scoring: true
 
    heading_lookahead: 0.325

@@ -2,7 +2,7 @@
     ROS navigation stack with velocity smoother and safety (reactive) controller
 -->
 <launch>
-  <include file="$(find dashgo_gazebo)/launch/includes/velocity_smoother.launch.xml"/>
+  <include file="$(find eai_gazebo)/launch/includes/velocity_smoother.launch.xml"/>
   <!-- <include file="$(find turtlebot_navigation)/launch/includes/safety_controller.launch.xml"/>-->
   
   <arg name="teb_move_base"   default="true"/>
@@ -18,13 +18,13 @@
   <group if="$(arg teb_move_base)">
     <!-- switch to teb_move_base -->
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
-      <rosparam file="$(find dashgo_nav)/config/odom/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find dashgo_nav)/config/odom/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find dashgo_nav)/config/odom/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find dashgo_nav)/config/odom/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find dashgo_nav)/config/odom/base_global_planner_param.yaml" command="load" />
+      <rosparam file="$(find eai_gazebo)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find eai_gazebo)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find eai_gazebo)/config/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find eai_gazebo)/config/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find eai_gazebo)/config/base_global_planner_param.yaml" command="load" />
 
-      <rosparam file="$(find dashgo_nav)/config/odom/teb_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find eai_gazebo)/config/teb_local_planner_params.yaml" command="load" />
 
       <param name="base_global_planner" value="global_planner/GlobalPlanner"/> 
       <param name="planner_frequency" value="1.0" />

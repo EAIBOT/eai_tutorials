@@ -7,6 +7,7 @@ import tf
 from math import radians, copysign
 import PyKDL
 from math import pi
+import math
 
 
 def quat_to_angle(quat):
@@ -62,6 +63,9 @@ class CalibrateAngular():
         rospy.loginfo("Bring up rqt_reconfigure to control the test.")
         
         reverse = 1
+
+	current_v=0
+	min_turn_speed=0.15
         
         while not rospy.is_shutdown():
             if self.start_test:
@@ -82,7 +86,20 @@ class CalibrateAngular():
                     
                     # Rotate the robot to reduce the error
                     move_cmd = Twist()
-                    move_cmd.angular.z = copysign(self.speed, error)
+                    #move_cmd.angular.z = copysign(self.speed, error)
+		    try: 
+		    	current_v =0.2*error;
+		    except:
+			print "current_v ji suan error"
+		    #print "*********current_v = "+ str(current_v)
+		    if math.fabs(current_v) >= self.speed:
+			current_v= self.speed
+		    elif math.fabs(current_v) < min_turn_speed :
+			current_v=min_turn_speed
+		    
+		    move_cmd.angular.z = copysign(math.fabs(current_v), error)
+		    #rospy.loginfo("w= "+str(move_cmd.angular.z)+" error = "+str(error))
+
                     self.cmd_vel.publish(move_cmd)
                     r.sleep()
                  

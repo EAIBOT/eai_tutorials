@@ -1,0 +1,21 @@
+driver_type: 0   #0->serial 1->UDP 
+port: /dev/port8  #192.168.31.100   /dev/port1
+baudrate: 115200   #5000    115200
+config_path: /home/eaibot/dashgo_ws/src/dashgo/smart_node/config/smart_config.yaml
+data_update_rate: 30 #data update rate in Hz
+ros_publish_rate: 30 #ros data publish rate in Hz
+
+# For a robot that uses base_footprint, change base_frame to base_footprint
+#base_frame: base_link
+base_frame: base_footprint
+
+useImu: True
+useSonar: False
+
+sonar_height: 0.15
+sonar_safe_distance: 10
+
+max_vx: 1.0 #m/s
+max_vw: 0.5 #rad/s
+
+accel_limit: 1.0

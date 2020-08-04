@@ -1,6 +1,6 @@
 <launch>
-  <include file="$(find astra_launch)/launch/astra.launch"/>
-  <include file="$(find dashgo_driver)/launch/demo.launch"/>
+  <include file="$(find dashgo_nav)/launch/astra.launch"/>
+  <include file="$(find smart_node)/launch/driver_imu.launch"/>
 
   <node name="follower" pkg="dashgo_tools" type="follower.py">
     <remap from="/cmd_vel" to="/smoother_cmd_vel"/>

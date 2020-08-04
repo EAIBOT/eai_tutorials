@@ -1,4 +1,5 @@
 #goal definition
+string method
 string imu
 float32 distance
 float32 angule

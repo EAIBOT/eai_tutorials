@@ -6,7 +6,7 @@ controller_patience: 3.0 # 3.0
 planner_frequency: 1.0
 planner_patience: 3.0
 
-oscillation_timeout: 5.0
+oscillation_timeout: 15.0
 oscillation_distance: 0.2
 
 # Planner selection
@@ -17,6 +17,11 @@ max_planning_retries: 1
 
 recovery_behavior_enabled: true
 clearing_rotation_allowed: true
+
+useMagnetometer: False
+auto_update_: False
+particle_range: 1.0
+angle_tolerance: 0.05
 
 recovery_behaviors:
  #- name: 'conservative_reset'
@@ -36,7 +41,7 @@ conservative_reset:
   layer_names: [obstacle_layer]
 
 aggressive_reset:
-  reset_distance: 1.0
+  reset_distance: 0.3
   #layer_names: [static_layer, obstacle_layer, inflation_layer]
   layer_names: [obstacle_layer]
 
